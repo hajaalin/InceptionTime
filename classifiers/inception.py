@@ -12,7 +12,7 @@ from utils.utils import save_test_duration
 class Classifier_INCEPTION:
 
     def __init__(self, output_directory, input_shape, nb_classes, verbose=False, build=True, batch_size=64,
-                 nb_filters=32, use_residual=True, use_bottleneck=True, depth=6, kernel_size=41, nb_epochs=1500):
+                 nb_filters=32, use_residual=True, use_bottleneck=True, depth=6, kernel_size=41, nb_epochs=1500, kernels=[]):
 
         self.output_directory = output_directory
 
@@ -21,6 +21,7 @@ class Classifier_INCEPTION:
         self.use_bottleneck = use_bottleneck
         self.depth = depth
         self.kernel_size = kernel_size - 1
+        self.kernels = kernels
         self.callbacks = None
         self.batch_size = batch_size
         self.bottleneck_size = 32
@@ -42,7 +43,10 @@ class Classifier_INCEPTION:
             input_inception = input_tensor
 
         # kernel_size_s = [3, 5, 8, 11, 17]
-        kernel_size_s = [self.kernel_size // (2 ** i) for i in range(3)]
+        if len(self.kernels) > 0:
+            kernel_size_s = self.kernels #[3, 7, 11, 23, 29]
+        else:
+            kernel_size_s = [self.kernel_size // (2 ** i) for i in range(3)]
 
         conv_list = []
 
