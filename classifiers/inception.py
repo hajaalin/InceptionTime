@@ -12,7 +12,8 @@ from utils.utils import save_test_duration
 class Classifier_INCEPTION:
 
     def __init__(self, output_directory, input_shape, nb_classes, verbose=False, build=True, batch_size=64,
-                 nb_filters=32, use_residual=True, use_bottleneck=True, depth=6, kernel_size=41, nb_epochs=1500, kernels=[]):
+                 nb_filters=32, use_residual=True, use_bottleneck=True, depth=6, kernel_size=41, nb_epochs=1500, kernels=[],
+                 optimizer='Adam', learning_rate=0.001):
 
         self.output_directory = output_directory
 
@@ -26,7 +27,13 @@ class Classifier_INCEPTION:
         self.batch_size = batch_size
         self.bottleneck_size = 32
         self.nb_epochs = nb_epochs
-
+        if optimizer == 'Adam':
+            self.optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+        elif optimizer == 'Adadelta':
+            self.optimizer = tf.keras.optimizers.Adadelta(learning_rate=learning_rate)
+        else:
+            raise ValueError('unknown optimizer:' + optimizer)
+        
         if build == True:
             self.model = self.build_model(input_shape, nb_classes)
             if (verbose == True):
@@ -97,7 +104,7 @@ class Classifier_INCEPTION:
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
-        model.compile(loss='categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(),
+        model.compile(loss='categorical_crossentropy', optimizer=self.optimizer,
                       metrics=['accuracy'])
 
         reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
