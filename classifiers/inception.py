@@ -12,7 +12,8 @@ from utils.utils import save_test_duration
 class Classifier_INCEPTION:
 
     def __init__(self, output_directory, input_shape, nb_classes, verbose=False, build=True, batch_size=64,
-                 nb_filters=32, use_residual=True, use_bottleneck=True, depth=6, kernel_size=41, nb_epochs=1500, kernels=[],
+                 nb_filters=32, use_residual=True, use_bottleneck=True, bottleneck_size=32, depth=6, kernel_size=41,
+                 nb_epochs=1500, kernels=[],
                  optimizer='Adam', learning_rate=0.001):
 
         self.output_directory = output_directory
@@ -25,7 +26,7 @@ class Classifier_INCEPTION:
         self.kernels = kernels
         self.callbacks = None
         self.batch_size = batch_size
-        self.bottleneck_size = 32
+        self.bottleneck_size = bottleneck_size
         self.nb_epochs = nb_epochs
         if optimizer == 'Adam':
             self.optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
