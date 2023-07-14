@@ -28,6 +28,7 @@ class Classifier_INCEPTION:
         self.batch_size = batch_size
         self.bottleneck_size = bottleneck_size
         self.nb_epochs = nb_epochs
+        self.learning_rate = learning_rate
         if optimizer == 'Adam':
             self.optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         elif optimizer == 'Adadelta':
@@ -109,7 +110,7 @@ class Classifier_INCEPTION:
                       metrics=['accuracy'])
 
         reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
-                                                      min_lr=0.0001)
+                                                      min_lr=min(0.0001, self.learning_rate/10))
 
         file_path = self.output_directory + 'best_model.hdf5'
 
